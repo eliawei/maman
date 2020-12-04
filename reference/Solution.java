@@ -1243,7 +1243,7 @@ public class Solution {
 
 
 
-    private static void createTable(String name, ArrayList<Pair<String, String>> typedSchema) {
+    private static void kcreateTable(String name, ArrayList<Pair<String, String>> typedSchema) {
         Connection connection = DBConnector.getConnection();
         PreparedStatement pstmt = null;
 

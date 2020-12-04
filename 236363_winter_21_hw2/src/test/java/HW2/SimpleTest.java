@@ -16,11 +16,13 @@ public class SimpleTest extends AbstractTest{
         test.setSemester(1);
         test.setTime(1);
         test.setDay(1);
-        test.setRoom(233);
+        test.setRoom(2443);
         test.setCreditPoints(3);
 
         ReturnValue ret = Solution.addTest(test);
         assertEquals(ReturnValue.OK, ret);
+
+        System.out.println(Solution.getTestProfile(test.getId(), test.getSemester()));
     }
 
     @org.junit.Test

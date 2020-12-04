@@ -1,5 +1,7 @@
 package HW2;
 
+import HW2.business.Student;
+import HW2.business.Test;
 import HW2.data.DBConnector;
 
 import java.sql.Connection;
@@ -11,25 +13,14 @@ import java.util.ArrayList;
 public class Example {
 
     public static void main(String[] args) {
-        Solution.createTables();
-        // javaStringExample();
-        // arrayListExample();
-        // dropTable();
-        // System.out.println("Creating hello_world Table");
-        // createTable();
-        // selectFromTable();
-        // System.out.println("inserting main.data into table");
-        // insertIntoTable();
-        // selectFromTable();
-        // System.out.println("updating main.data in table");
-        // updateTable();
-        // selectFromTable();
-        // System.out.println("deleting main.data from table");
-        // deleteFromTable();
-        // selectFromTable();
-        // dropTable();
-
-
+        Student student = new Student();
+        student.setId(22);
+        student.setName("shuna");
+        student.setFaculty("EE");
+        student.setCreditPoints(44);
+        Solution.addStudent(student);
+        Solution.getStudentProfile(22);
+        Solution.deleteStudent(22);
     }
 
     private static void deleteFromTable() {
