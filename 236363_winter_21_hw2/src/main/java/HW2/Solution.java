@@ -22,6 +22,7 @@ public class Solution {
     private final static String TEST_TABLE = "Test";
     private final static String ATTEND_TABLE = "Attend";
     private final static String OVERSEE_TABLE = "Oversee";
+    private final static String CREDIT_POINTS_TABLE = "CreditPoints";
 
     public static void createTables() {
         // create credit points fore each faculty table
@@ -29,7 +30,8 @@ public class Solution {
         // create student table
         String studAttributes = "Student_ID INTEGER NOT NULL,\n" + "Name TEXT NOT NULL,\n" + "Faculty TEXT NOT NULL,\n"
                 + "Points INTEGER NOT NULL";
-        String studConfigs = "PRIMARY KEY (Student_ID),\n" + "CHECK (Student_ID > 0),\n" + "CHECK (Points >= 0)";
+        String studConfigs = 
+                "PRIMARY KEY (Student_ID),\n" + "CHECK (Student_ID > 0),\n" + "CHECK (Points >= 0)";
         createTable(STUDENT_TABLE, studAttributes, studConfigs);
         // create supervisor table
         String supervAttributes = "Supervisor_ID INTEGER NOT NULL,\n" + "Name TEXT NOT NULL,\n"
@@ -42,7 +44,8 @@ public class Solution {
                 + "Time INTEGER NOT NULL,\n" + "Room INTEGER NOT NULL,\n" + "Day INTEGER NOT NULL,\n"
                 + "Points INTEGER NOT NULL";
         String testConfigs = "PRIMARY KEY (Course_ID, Semester),\n" + "CHECK (Course_ID > 0),\n" + "CHECK (Room > 0),\n"
-                + "CHECK (Points > 0)";
+                + "CHECK (Points > 0),\n" + "CHECK (Semester BETWEEN 1 AND 3),\n" + "CHECK (Day BETWEEN 1 AND 31),\n"
+                + "CHECK (Time BETWEEN 1 AND 3)";
         createTable(TEST_TABLE, testAttributes, testConfigs);
         // create attend table
         String attendAttributes = "Student_ID INTEGER NOT NULL,\n" + "Course_ID INTEGER NOT NULL,\n"
