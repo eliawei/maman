@@ -30,8 +30,7 @@ public class Solution {
         // create student table
         String studAttributes = "Student_ID INTEGER NOT NULL,\n" + "Name TEXT NOT NULL,\n" + "Faculty TEXT NOT NULL,\n"
                 + "Points INTEGER NOT NULL";
-        String studConfigs = 
-                "PRIMARY KEY (Student_ID),\n" + "CHECK (Student_ID > 0),\n" + "CHECK (Points >= 0)";
+        String studConfigs = "PRIMARY KEY (Student_ID),\n" + "CHECK (Student_ID > 0),\n" + "CHECK (Points >= 0)";
         createTable(STUDENT_TABLE, studAttributes, studConfigs);
         // create supervisor table
         String supervAttributes = "Supervisor_ID INTEGER NOT NULL,\n" + "Name TEXT NOT NULL,\n"
@@ -50,14 +49,16 @@ public class Solution {
         // create attend table
         String attendAttributes = "Student_ID INTEGER NOT NULL,\n" + "Course_ID INTEGER NOT NULL,\n"
                 + "SEMESTER INTEGER NOT NULL";
-        String attendConfigs = "FOREIGN KEY (Student_ID) REFERENCES " + STUDENT_TABLE + " ON DELETE CASCADE" + ",\n"
+        String attendConfigs = "PRIMARY KEY (Student_ID, Course_ID, Semester),\n"
+                + "FOREIGN KEY (Student_ID) REFERENCES " + STUDENT_TABLE + " ON DELETE CASCADE" + ",\n"
                 + "FOREIGN KEY (Course_ID, Semester) REFERENCES " + TEST_TABLE + " ON DELETE CASCADE";
         createTable(ATTEND_TABLE, attendAttributes, attendConfigs);
         // create oversee table
         String overseeAttributes = "Supervisor_ID INTEGER NOT NULL,\n" + "Course_ID INTEGER NOT NULL,\n"
                 + "SEMESTER INTEGER NOT NULL";
-        String overseeConfigs = "FOREIGN KEY (Supervisor_ID) REFERENCES " + SUPERVISOR_TABLE + " ON DELETE CASCADE"
-                + ",\n" + "FOREIGN KEY (Course_ID, Semester) REFERENCES " + TEST_TABLE + " ON DELETE CASCADE";
+        String overseeConfigs = "PRIMARY KEY (Supervisor_ID, Course_ID, Semester),\n"
+                + "FOREIGN KEY (Supervisor_ID) REFERENCES " + SUPERVISOR_TABLE + " ON DELETE CASCADE" + ",\n"
+                + "FOREIGN KEY (Course_ID, Semester) REFERENCES " + TEST_TABLE + " ON DELETE CASCADE";
         createTable(OVERSEE_TABLE, overseeAttributes, overseeConfigs);
         // TODO: add views creation
     }
@@ -422,12 +423,12 @@ public class Solution {
             }
         }
     }
-    
+
     // TODO: Itay
     public static ReturnValue studentAttendTest(Integer studentID, Integer testID, Integer semester) {
         return OK;
     }
-    
+
     // TODO: Itay
     public static ReturnValue studentWaiveTest(Integer studentID, Integer testID, Integer semester) {
         return OK;
@@ -435,14 +436,75 @@ public class Solution {
 
     // TODO: Elia
     public static ReturnValue supervisorOverseeTest(Integer supervisorID, Integer testID, Integer semester) {
-        return OK;
+        Connection connection = DBConnector.getConnection();
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("INSERT INTO " + OVERSEE_TABLE + " VALUES (?, ?, ?)");
+            pstmt.setInt(1, supervisorID);
+            pstmt.setInt(2, testID);
+            pstmt.setInt(3, semester);
+
+            pstmt.execute();
+            return OK;
+
+        } catch (SQLException e) {
+            // e.printStackTrace()();
+            Integer errorCode = Integer.valueOf(e.getSQLState());
+            if (errorCode == PostgreSQLErrorCodes.FOREIGN_KEY_VIOLATION.getValue())
+                return ReturnValue.NOT_EXISTS;
+            if (errorCode == PostgreSQLErrorCodes.UNIQUE_VIOLATION.getValue())
+                return ALREADY_EXISTS;
+            return ERROR;
+        } finally {
+            try {
+                pstmt.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+            }
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+            }
+        }
     }
-    
+
     // TODO: Elia
     public static ReturnValue supervisorStopsOverseeTest(Integer supervisorID, Integer testID, Integer semester) {
-        return OK;
+        Connection connection = DBConnector.getConnection();
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement(
+                    "DELETE FROM " + OVERSEE_TABLE + " WHERE supervisor_id = ? AND course_id = ? AND semester = ? ");
+            pstmt.setInt(1, supervisorID);
+            pstmt.setInt(2, testID);
+            pstmt.setInt(3, semester);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 1)
+                return OK;
+            else if (affectedRows == 0)
+                return NOT_EXISTS;
+            return ERROR;
+        } catch (SQLException e) {
+            // e.printStackTrace()();
+            return ERROR;
+        } finally {
+            try {
+                pstmt.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+                // return ERROR;
+            }
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+                // return ERROR;
+            }
+        }
     }
-    
+
     // TODO: Itay
     public static Float averageTestCost() {
         return 0.0f;
