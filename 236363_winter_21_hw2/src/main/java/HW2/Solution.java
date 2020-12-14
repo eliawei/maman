@@ -317,15 +317,110 @@ public class Solution {
     }
 
     public static ReturnValue addSupervisor(Supervisor supervisor) {
-        return OK;
+        Connection connection = DBConnector.getConnection();
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("INSERT INTO " + SUPERVISOR_TABLE + " VALUES (?, ?, ?)");
+            pstmt.setInt(1, supervisor.getId());
+            pstmt.setString(2, supervisor.getName());
+            pstmt.setInt(3, supervisor.getSalary());
+
+            pstmt.execute();
+            return OK;
+
+        } catch (SQLException e) {
+            // e.printStackTrace()();
+            Integer errorCode = Integer.valueOf(e.getSQLState());
+            if (errorCode == PostgreSQLErrorCodes.CHECK_VIOLATION.getValue()
+                    || errorCode == PostgreSQLErrorCodes.NOT_NULL_VIOLATION.getValue()
+                    || errorCode == PostgreSQLErrorCodes.FOREIGN_KEY_VIOLATION.getValue())
+                return BAD_PARAMS;
+            if (errorCode == PostgreSQLErrorCodes.UNIQUE_VIOLATION.getValue())
+                return ALREADY_EXISTS;
+            return ERROR;
+        } finally {
+            try {
+                pstmt.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+            }
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+            }
+        }
     }
 
     public static Supervisor getSupervisorProfile(Integer supervisorID) {
-        return new Supervisor();
+        Connection connection = DBConnector.getConnection();
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("SELECT * FROM " + SUPERVISOR_TABLE + " WHERE Supervisor_ID = ?");
+            pstmt.setInt(1, supervisorID);
+
+            ResultSet results = pstmt.executeQuery();
+            if (results.next()) {
+                Supervisor s = new Supervisor();
+                s.setId(results.getInt(1));
+                s.setName(results.getString(2));
+                s.setSalary(results.getInt(3));
+                results.close();
+                return s;
+            }
+
+            results.close();
+            return Supervisor.badSupervisor();
+
+        } catch (SQLException e) {
+            // e.printStackTrace()();
+            return Supervisor.badSupervisor();
+        } finally {
+            try {
+                pstmt.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+                // return ERROR;
+            }
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+                // return ERROR;
+            }
+        }
     }
 
     public static ReturnValue deleteSupervisor(Integer supervisorID) {
-        return OK;
+        Connection connection = DBConnector.getConnection();
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("DELETE FROM " + SUPERVISOR_TABLE + " WHERE supervisor_id = ? ");
+            pstmt.setInt(1, supervisorID);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 1)
+                return OK;
+            else if (affectedRows == 0)
+                return NOT_EXISTS;
+            return ERROR;
+        } catch (SQLException e) {
+            // e.printStackTrace()();
+            return ERROR;
+        } finally {
+            try {
+                pstmt.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+                // return ERROR;
+            }
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                // e.printStackTrace()();
+                // return ERROR;
+            }
+        }
     }
     
     // TODO: Itay

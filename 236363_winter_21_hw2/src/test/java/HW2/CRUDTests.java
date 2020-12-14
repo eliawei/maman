@@ -98,9 +98,6 @@ public class CRUDTests extends AbstractTest {
         assertEquals(rv, OK);
         rv = addStudent(createStudent(2, 0, "shai", "CS"));
         assertEquals(rv, OK);
-        // should return BAD_PARAMS - not good
-        // rv = addStudent(createStudent(10, 11, "bad", "TONTO"));
-        // assertEquals(rv, BAD_PARAMS);
         assertEquals(addStudent(createStudent(10, -1, "bonzo", "EE")), BAD_PARAMS);
         assertEquals(addStudent(createStudent(1, -1, "bonzo", "EE")), BAD_PARAMS);
         assertEquals(addStudent(createStudent(20, 1, null, "EE")), BAD_PARAMS);
