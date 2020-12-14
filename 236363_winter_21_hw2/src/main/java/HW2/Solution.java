@@ -327,62 +327,77 @@ public class Solution {
     public static ReturnValue deleteSupervisor(Integer supervisorID) {
         return OK;
     }
-
+    
+    // TODO: Itay
     public static ReturnValue studentAttendTest(Integer studentID, Integer testID, Integer semester) {
         return OK;
     }
-
+    
+    // TODO: Itay
     public static ReturnValue studentWaiveTest(Integer studentID, Integer testID, Integer semester) {
         return OK;
     }
 
+    // TODO: Elia
     public static ReturnValue supervisorOverseeTest(Integer supervisorID, Integer testID, Integer semester) {
         return OK;
     }
-
+    
+    // TODO: Elia
     public static ReturnValue supervisorStopsOverseeTest(Integer supervisorID, Integer testID, Integer semester) {
         return OK;
     }
-
+    
+    // TODO: Itay
     public static Float averageTestCost() {
         return 0.0f;
     }
+    // TODO: Elia
 
     public static Integer getWage(Integer supervisorID) {
         return 0;
     }
+    // TODO: Itay
 
     public static ArrayList<Integer> supervisorOverseeStudent() {
         return new ArrayList<Integer>();
     }
+    // TODO: Elia
 
     public static ArrayList<Integer> testsThisSemester(Integer semester) {
         return new ArrayList<Integer>();
     }
+    // TODO: Itay
 
     public static Boolean studentHalfWayThere(Integer studentID) {
         return true;
     }
+    // TODO: Elia
 
     public static Integer studentCreditPoints(Integer studentID) {
         return 0;
     }
+    // TODO: Itay
 
     public static Integer getMostPopularTest(String faculty) {
         return 0;
     }
+    // TODO: Elia
 
     public static ArrayList<Integer> getConflictingTests() {
         return new ArrayList<Integer>();
     }
+    // TODO: Itay
 
     public static ArrayList<Integer> graduateStudents() {
         return new ArrayList<Integer>();
     }
+    // TODO: Elia
 
     public static ArrayList<Integer> getCloseStudents(Integer studentID) {
         return new ArrayList<Integer>();
     }
+    // TODO: Itay
 
     private static void dropTable(String tableName) {
         Connection connection = DBConnector.getConnection();
@@ -404,6 +419,7 @@ public class Solution {
             }
         }
     }
+    // TODO: Elia
 
     private static void createTable(String tableName, String attributes, String configs) {
         Connection connection = DBConnector.getConnection();
@@ -425,6 +441,7 @@ public class Solution {
             }
         }
     }
+    // TODO: Itay
 
     private static void clearTable(String tableName) {
         Connection connection = DBConnector.getConnection();
